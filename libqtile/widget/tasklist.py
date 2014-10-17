@@ -118,7 +118,7 @@ class TaskList(base._Widget, base.PaddingMixin, base.MarginMixin):
     def get_clicked(self, x, y):
         window = None
         new_width = width = 0
-        for w in self.bar.screen.group.windows:
+        for w in self.bar.screen.group.layout.clients:
             new_width += self.icon_size + self.box_width(w.name)
             if x >= width and x <= new_width:
                 window = w
@@ -190,7 +190,7 @@ class TaskList(base._Widget, base.PaddingMixin, base.MarginMixin):
         self.drawer.clear(self.background or self.bar.background)
         offset = 0
 
-        for w in self.bar.screen.group.windows:
+        for w in self.bar.screen.group.layout.clients:
             state = ''
             if w is None:
                 pass

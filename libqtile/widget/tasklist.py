@@ -107,6 +107,9 @@ class TaskList(base._Widget, base.PaddingMixin, base.MarginMixin):
         if not window or window and window.group is group:
             self.bar.draw()
 
+    def layout_changed(self, *args, **kwargs):
+        self.update()
+
     def remove_icon_cache(self, window):
         wid = window.window.wid
         if wid in self._icons_cache:
@@ -121,6 +124,7 @@ class TaskList(base._Widget, base.PaddingMixin, base.MarginMixin):
         hook.subscribe.focus_change(self.update)
         hook.subscribe.float_change(self.update)
         hook.subscribe.client_urgent_hint_changed(self.update)
+        hook.subscribe.layout_change(self.layout_changed)
 
         hook.subscribe.net_wm_icon_change(self.invalidate_cache)
         hook.subscribe.client_killed(self.remove_icon_cache)

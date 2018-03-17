@@ -77,6 +77,7 @@ widgets = {
     "StockTicker": "stock_ticker",
     "SwapGraph": "graph",
     "Systray": "systray",
+    "SystrayNg": "systray_ng",
     "TaskList": "tasklist",
     "TextBox": "textbox",
     "ThermalSensor": "sensors",

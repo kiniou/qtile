@@ -65,7 +65,7 @@ class Volume(base._TextBox):
         ("volume_up_command", None, "Volume up command"),
         ("volume_down_command", None, "Volume down command"),
         ("get_volume_command", None, "Command to get the current volume"),
-        ("pulseaudio", False, "Use pulseaudio to handle volume"),
+        ("pulseaudio", None, "Use pulseaudio to handle volume"),
         ("step", 2, "Volume change for up an down commands in percentage."
                     "Only used if ``volume_up_command`` and ``volume_down_command`` are not set.")
     ]
@@ -93,9 +93,14 @@ class Volume(base._TextBox):
 
     def _get_pulse_volume(self):
         with pulsectl.Pulse() as pulse:
-            sink = pulse.get_sink_by_name("@DEFAULT_SINK@")
-            _volume = sink.volume.value_flat * 100.0
-            if _volume == 0 or sink.mute == 1:
+            if self.pulseaudio == 'sink':
+                channel = pulse.get_sink_by_name("@DEFAULT_SINK@")
+            elif self.pulseaudio == 'source':
+                channel = pulse.get_source_by_name("@DEFAULT_SOURCE@")
+            _volume = channel.volume.value_flat * 100.0
+            _volume = channel.volume.value_flat * 100.0
+
+            if _volume == 0 or channel.mute == 1:
                 return "[off]"
             else:
                 return "[{:d}%]".format(int(round(_volume)))
@@ -178,7 +183,7 @@ class Volume(base._TextBox):
 
             if self.get_volume_command:
                 get_volume_cmd = self.get_volume_command
-            if self.pulseaudio:
+            if self.pulseaudio is not None:
                 mixer_out = self._get_pulse_volume()
             else:
                 mixer_out = self.call_process(get_volume_cmd)
